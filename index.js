@@ -1,7 +1,7 @@
 const socket = require('socket.io-client')('http://snek.ioncodes.com/');
 const notifier = require('node-notifier');
 const crypto = require('crypto');
-const password = 'YOUR_TOKEN';
+const password = process.env.TOKEN;
 const algorithm = 'aes-256-ctr';
 
 function decrypt(text) {
@@ -14,5 +14,8 @@ function decrypt(text) {
 socket.on('notification', function(_msg) {
     let msg = JSON.parse(decrypt(_msg));
     console.log(msg);
+    if(msg.title === '') {
+        msg.title = msg.displayName;
+    }
     notifier.notify(msg);
 });
